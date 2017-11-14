@@ -1,6 +1,8 @@
-public class P1
+using Euler;
+
+public class P1 : IEulerProblem
 {
-    public int FindSum()
+    public string GetAnswer()
     {
         var below = 1000;
         var sum = 0;
@@ -13,6 +15,6 @@ public class P1
             }
         }
 
-        return sum;
+        return sum.ToString();
     }
 }

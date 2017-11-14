@@ -1,6 +1,8 @@
-public class P2
+using Euler;
+
+public class P2 : IEulerProblem
 {
-    public int FindSum()
+    public string GetAnswer()
     {
         var below = 4000000;
 
@@ -18,6 +20,6 @@ public class P2
             current = next;
         }
 
-        return sum;
+        return sum.ToString();
     }
 }
