@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Euler
 {
@@ -6,7 +8,7 @@ namespace Euler
     {
         static void Main(string[] args)
         {
-            IEulerProblem[] problems = { new P1(), new P2(), new P3() };
+            var problems = LoadAllProblems();
 
             Func<IEulerProblem, string> method = problem => problem.GetAnswer().ToString();
 
@@ -19,7 +21,7 @@ namespace Euler
                 watch.Stop();
 
                 var executionTime = $"{watch.Elapsed.Minutes}m {watch.Elapsed.Seconds}s {watch.Elapsed.Milliseconds}ms";
-                Console.WriteLine($"{problem.GetType().Name.PadRight(10)}{result.PadRight(15)}{executionTime.PadRight(30)}");
+                Console.WriteLine($"{problem.GetType().Name.PadRight(10)}{result.PadRight(30)}{executionTime.PadRight(30)}");
             }
 
             Console.ReadKey();
@@ -27,8 +29,19 @@ namespace Euler
 
         private static void WriteHeader()
         {
-            Console.WriteLine($"{"Problem".PadRight(10)}{"Answer".PadRight(15)}{"Time".PadRight(30)}");
-            Console.WriteLine($"{"-------".PadRight(10)}{"------".PadRight(15)}{"----".PadRight(30)}");
+            Console.WriteLine($"{"Problem".PadRight(10)}{"Answer".PadRight(30)}{"Time".PadRight(30)}");
+            Console.WriteLine($"{"-------".PadRight(10)}{"------".PadRight(30)}{"----".PadRight(30)}");
+        }
+        
+        private static IReadOnlyCollection<IEulerProblem> LoadAllProblems()
+        {
+            var type = typeof(IEulerProblem);
+            return AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(s => s.GetTypes())
+                .Where(p => type.IsAssignableFrom(p) && !p.IsInterface)
+                .OrderByDescending(t => t.Name)
+                .Select(t => (IEulerProblem) Activator.CreateInstance(t))
+                .ToList();
         }
     }
 }
